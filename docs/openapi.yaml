@@ -1,0 +1,453 @@
+openapi: 3.0.0
+info:
+  title: MiniBlog API
+  version: 1.0.0
+  description: API REST para MiniBlog con Authors, Posts y Comments (extra credit).
+
+servers:
+  - url: http://localhost:3000
+    description: Local
+
+tags:
+  - name: Authors
+  - name: Posts
+  - name: Comments
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - message
+          properties:
+            message:
+              type: string
+              example: Not Found
+    Author:
+      type: object
+      required:
+        - id
+        - name
+        - email
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          maxLength: 100
+          example: John Doe
+        email:
+          type: string
+          maxLength: 150
+          format: email
+          example: john.doe@example.com
+        bio:
+          type: string
+          nullable: true
+          example: Bio text
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-01-01T00:00:00.000Z
+    AuthorCreateRequest:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: John Doe
+        email:
+          type: string
+          format: email
+          maxLength: 150
+          example: john.doe@example.com
+        bio:
+          type: string
+          nullable: true
+          example: Bio text
+    Post:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - author_id
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          maxLength: 200
+          example: My Post
+        content:
+          type: string
+          example: Some content
+        author_id:
+          type: integer
+          example: 1
+        published:
+          type: boolean
+          default: false
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-01-01T00:00:00.000Z
+    PostCreateRequest:
+      type: object
+      required:
+        - title
+        - content
+        - author_id
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: My Post
+        content:
+          type: string
+          minLength: 1
+          example: Some content
+        author_id:
+          type: integer
+          example: 1
+        published:
+          type: boolean
+          default: false
+          example: false
+    Comment:
+      type: object
+      required:
+        - id
+        - post_id
+        - author_id
+        - content
+      properties:
+        id:
+          type: integer
+          example: 1
+        post_id:
+          type: integer
+          example: 1
+        author_id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: Nice post!
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-01-01T00:00:00.000Z
+    CommentCreateRequest:
+      type: object
+      required:
+        - post_id
+        - author_id
+        - content
+      properties:
+        post_id:
+          type: integer
+          example: 1
+        author_id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          minLength: 1
+          example: Nice post!
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            missingFields:
+              value:
+                error:
+                  message: "Required fields are missing"
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            authorNotFound:
+              value:
+                error:
+                  message: "Author not found"
+            postNotFound:
+              value:
+                error:
+                  message: "Post not found"
+    ConflictEmail:
+      description: Conflict (duplicate email)
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+            properties:
+              error:
+                type: string
+                example: Email already exists
+          examples:
+            duplicateEmail:
+              value:
+                error: Email already exists
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            unexpected:
+              value:
+                error:
+                  message: "Internal Server Error"
+
+paths:
+  /api/authors:
+    get:
+      tags: [Authors]
+      summary: List authors
+      responses:
+        "200":
+          description: Authors list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+              example:
+                - id: 1
+                  name: John Doe
+                  email: john.doe@example.com
+                  bio: Bio text
+                  created_at: 2025-01-01T00:00:00.000Z
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Authors]
+      summary: Create author
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorCreateRequest'
+            examples:
+              valid:
+                value:
+                  name: John Doe
+                  email: john.doe@example.com
+                  bio: Bio text
+      responses:
+        "201":
+          description: Author created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "409":
+          $ref: '#/components/responses/ConflictEmail'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/authors/{id}:
+    get:
+      tags: [Authors]
+      summary: Get author by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Author detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+              example:
+                id: 1
+                name: John Doe
+                email: john.doe@example.com
+                bio: Bio text
+                created_at: 2025-01-01T00:00:00.000Z
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Authors]
+      summary: Update author
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorCreateRequest'
+            examples:
+              valid:
+                value:
+                  name: Updated Name
+                  email: updated@example.com
+                  bio: Updated bio
+      responses:
+        "200":
+          description: Author updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/ConflictEmail'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags: [Authors]
+      summary: Delete author
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "204":
+          description: Author deleted successfully (no content)
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/posts:
+    get:
+      tags: [Posts]
+      summary: List posts
+      responses:
+        "200":
+          description: Posts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Posts]
+      summary: Create post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+            examples:
+              valid:
+                value:
+                  title: My Post
+                  content: Some content
+                  author_id: 1
+                  published: true
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/posts/{id}:
+    get:
+      tags: [Posts]
+      summary: Get post by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Post detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags: [Posts]
+      summary: Update post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+            examples:
+              valid:
+                value:
+                  title: Updated title
+                  content: Updated content
+                  author_id: 1
+                  published: false
+      responses:
+        "200":
+          description: Post
