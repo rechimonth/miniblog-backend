@@ -14,14 +14,12 @@ const { validatePostPayload } = require('../middlewares/validate');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  try {
-    const posts = await listPosts();
-    return res.status(200).json(posts);
-  } catch (err) {
-    return next(err);
-  }
-});
+const asyncHandler = require('../middlewares/asyncHandler');
+
+router.get('/', asyncHandler(async (req, res) => {
+  const posts = await listPosts();
+  return res.status(200).json(posts);
+}));
 
 // MUST be declared before `/:postId` to avoid route collision.
 router.get('/author/:authorId', async (req, res, next) => {

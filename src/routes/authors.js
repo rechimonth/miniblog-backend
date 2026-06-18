@@ -13,14 +13,12 @@ const { validateAuthorPayload } = require('../middlewares/validate');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  try {
-    const authors = await listAuthors();
-    return res.status(200).json(authors);
-  } catch (err) {
-    return next(err);
-  }
-});
+const asyncHandler = require('../middlewares/asyncHandler');
+
+router.get('/', asyncHandler(async (req, res) => {
+  const authors = await listAuthors();
+  return res.status(200).json(authors);
+}));
 
 router.get('/:authorId', async (req, res, next) => {
   try {
