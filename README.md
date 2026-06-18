@@ -293,6 +293,7 @@ Si usas SSL con Railway Postgres, el backend ya configura `ssl.rejectUnauthorize
 
 Registro técnico de decisiones tomadas durante el desarrollo usando asistencia por IA. (Transparencia para evaluación.)
 
+
 ### Caso A — Conversión de errores PostgreSQL `23505` a HTTP `409`
 
 **Problema**: al violar una restricción de unicidad en PostgreSQL (código `23505`), la API respondía un **500**.
