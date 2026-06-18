@@ -1,4 +1,4 @@
-# MiniBlog API
+ # MiniBlog API
 
 API REST en **Node.js + Express + PostgreSQL** para gestionar **Authors**, **Posts** y (extra credit) **Comments**.
 
@@ -182,6 +182,14 @@ npm start
 
 ### Desarrollo
 
+Docs (Swagger UI): http://localhost:3000/api-docs/
+
+
+
+
+> Requiere `nodemon` instalado.
+
+
 ```bash
 npm run dev
 ```
@@ -201,7 +209,7 @@ La suite valida el comportamiento mediante HTTP requests reales y contra Postgre
 Ejecuta:
 
 ```bash
-npm test
+:http://localhost:3000/api-docs/npm test
 ```
 
 Si tienes problemas intermitentes por conexiones, asegúrate de:
