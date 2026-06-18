@@ -22,7 +22,13 @@ const pool = new Pool({
   password: process.env.PGPASSWORD,
   max: Number(process.env.PG_POOL_MAX || 10),
   idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS || 30000),
-  connectionTimeoutMillis: Number(process.env.PG_CONN_TIMEOUT_MS || 2000),
+  connectionTimeoutMillis: Number(process.env.PG_CONN_TIMEOUT_MS || 15000),
+
+  // Railway postgres-ssl requires SSL.
+  // Using rejectUnauthorized:false because Railway manages certs internally.
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 module.exports = pool;
