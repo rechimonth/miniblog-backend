@@ -8,14 +8,19 @@ const PORT = Number(process.env.PORT || 3000);
 const ensureDbSchema = require('./middlewares/ensureDb');
 
 (async () => {
+  // eslint-disable-next-line no-console
+  console.log('[server] boot: starting schema ensure');
   try {
     await ensureDbSchema();
+    // eslint-disable-next-line no-console
+    console.log('[server] boot: schema ensure finished');
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[server] Failed to ensure DB schema', err);
-    // Importante: No tumbamos el proceso; dejar que el app responda con 500 ordenado.
-    // La inicialización de rutas ya tiene manejador de errores.
   }
+
+  // eslint-disable-next-line no-console
+  console.log('[server] boot: starting listener');
 
   app.listen(PORT, '0.0.0.0', () => {
     // eslint-disable-next-line no-console
