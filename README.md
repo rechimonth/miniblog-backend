@@ -234,6 +234,15 @@ La especificación está en:
 - **API pública**: https://miniblog-backend-production-7a64.up.railway.app
 - **DB (Postgres)**: postgres-production-c8a9a.up.railway.app
 
+**Endpoints de producción (API pública)**
+
+- https://miniblog-backend-production-7a64.up.railway.app/api/authors
+- https://miniblog-backend-production-7a64.up.railway.app/api/posts
+- https://miniblog-backend-production-7a64.up.railway.app/api/comments/post/1
+
+(Usá un `postId` existente si `/post/1` no tiene datos.)
+
+
 ### Variables de entorno recomendadas en Railway
 
 En Railway agrega variables como:
