@@ -16,6 +16,10 @@ const router = express.Router();
 
 const asyncHandler = require('../middlewares/asyncHandler');
 
+// Required for nested comments routes
+const { listCommentsByPost, createComment } = require('../services/commentService');
+
+
 router.get('/', asyncHandler(async (req, res) => {
   const posts = await listPosts();
   return res.status(200).json(posts);
@@ -109,4 +113,41 @@ router.delete('/:postId', async (req, res, next) => {
   }
 });
 
+// Nested comments required by the project (mounted under /api/posts)
+router.get('/:postId/comments', async (req, res, next) => {
+  try {
+    const postId = Number(req.params.postId);
+    if (!Number.isInteger(postId) || postId <= 0) {
+      return res.status(404).json({ error: { message: 'Post not found' } });
+    }
+
+    const comments = await listCommentsByPost(postId);
+    return res.status(200).json(comments);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post('/:postId/comments', validatePostPayload, async (req, res, next) => {
+  try {
+    const postId = Number(req.params.postId);
+    if (!Number.isInteger(postId) || postId <= 0) {
+      return res.status(404).json({ error: { message: 'Post not found' } });
+    }
+
+    const { author_id, content } = req.body;
+
+    const created = await createComment({
+      postId,
+      authorId: Number(author_id),
+      content,
+    });
+
+    return res.status(201).json(created);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
+

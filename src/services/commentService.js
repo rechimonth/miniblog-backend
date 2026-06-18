@@ -23,7 +23,17 @@ const listCommentsByPost = async (postId) => {
   return rows;
 };
 
+const deleteComment = async (commentId) => {
+  const { rows } = await pool.query(
+    'DELETE FROM comments WHERE id = $1 RETURNING id',
+    [commentId]
+  );
+  return rows.length === 0 ? null : true;
+};
+
 module.exports = {
   createComment,
   listCommentsByPost,
+  deleteComment,
 };
+

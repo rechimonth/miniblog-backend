@@ -18,8 +18,6 @@ app.use('/api/comments', commentsRoutes);
 // Global error handler must be registered last
 app.use(errorHandler);
 
-// Safety: convert unhandled errors to 500 ordered response
-app.use((err, req, res, next) => errorHandler(err, req, res, next));
-
 module.exports = app;
+
 
