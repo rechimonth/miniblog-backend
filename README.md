@@ -227,7 +227,14 @@ El sistema delega de forma estricta todo error interceptado en las capas interna
 
 La API se encuentra desplegada y operativa en producción en la plataforma de servicios en la nube Railway.
 
-* **URL Pública Operativa de la API:** [https://postgres-production-c8a9a.up.railway.app](https://postgres-production-c8a9a.up.railway.app)
+## 🚀 Despliegue (Deployment)
+
+La API está desplegada y accesible públicamente a través de Railway. Puedes interactuar con ella utilizando los siguientes enlaces:
+
+* **URL Base:** [https://miniblog-backend-production-7a64.up.railway.app/api](https://miniblog-backend-production-7a64.up.railway.app/api)
+* **Authors:** [https://miniblog-backend-production-7a64.up.railway.app/api/authors](https://miniblog-backend-production-7a64.up.railway.app/api/authors)
+* **Posts:** [https://miniblog-backend-production-7a64.up.railway.app/api/posts](https://miniblog-backend-production-7a64.up.railway.app/api/posts)
+* **Documentación API MiniBlog (OpenAPI):** [https://miniblog-backend-production-7a64.up.railway.app/api/docs](https://miniblog-backend-production-7a64.up.railway.app/api/docs)
 
 ### Estrategia de Conexión en Producción
 
