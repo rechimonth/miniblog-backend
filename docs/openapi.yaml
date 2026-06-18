@@ -7,6 +7,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local
+  - url: https://miniblog-backend-production-7a64.up.railway.app
+    description: Railway Production
 
 tags:
   - name: Authors

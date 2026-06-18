@@ -245,12 +245,38 @@ En Railway agrega variables como:
 - `DB_PASSWORD`
 - `PORT` (si aplica)
 
-> `src/config/db.js` ya soporta este estilo y agrega `ssl` con `rejectUnauthorized: false` para Railway.
 
 ### URLs internas y públicas
 
-- La API normalmente responde en la URL pública de Railway.
+- **API (public)**: https://miniblog-backend-production-7a64.up.railway.app
+- **Authors**: https://miniblog-backend-production-7a64.up.railway.app/authors
+- **Posts**: https://miniblog-backend-production-7a64.up.railway.app/posts
+- **Comments**: https://miniblog-backend-production-7a64.up.railway.app/comments
+
+> Nota: En esta app los endpoints están montados bajo `/api/...` en tiempo de ejecución. Por eso, si al probar en Railway no coincide, intenta también:
+>
+> - `/api/authors`
+> - `/api/posts`
+> - `/api/comments`
+
 - La base de datos usa la URL interna de Postgres provista por Railway.
+
+### Guía rápida de deploy en Railway
+
+1. Crea un proyecto en Railway y vincula tu repositorio GitHub.
+2. Agrega un servicio **Postgres** (si aún no existe).
+3. Define las variables de entorno en Railway (Settings → Variables):
+   - `DB_HOST`
+   - `DB_PORT`
+   - `DB_NAME`
+   - `DB_USER`
+   - `DB_PASSWORD`
+   - `PORT` (si aplica)
+4. Asegúrate de que Railway ejecute `npm run start`.
+5. (Opcional) Ejecuta los scripts SQL en el esquema de la DB en el mismo entorno.
+
+Si usas SSL con Railway Postgres, el backend ya configura `ssl.rejectUnauthorized=false` en `src/config/db.js`.
+
 
 ---
 
